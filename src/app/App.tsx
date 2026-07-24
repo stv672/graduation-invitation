@@ -255,7 +255,7 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
               animation: "glow-pulse 1.5s ease-in-out infinite",
             }}
           >
-            ⚠️ AND DON&apos;T BE LATE ⚠️
+            ⚠️ DON&apos;T BE LATE ⚠️
           </div>
 
           {/* OK button */}
