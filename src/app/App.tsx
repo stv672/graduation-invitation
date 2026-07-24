@@ -4,13 +4,13 @@ const ACHIEVEMENTS = [
   { id: 1, icon: "🎓", title: "Scholar Supreme", desc: "Completed 4 years of academic quests", xp: 5000, unlocked: true },
   { id: 2, icon: "📜", title: "Thesis Conqueror", desc: "Defeated the final boss: the dissertation", xp: 3500, unlocked: true },
   { id: 3, icon: "⚔️", title: "All-Nighter Survivor", desc: "Endured 100+ hours of study marathons", xp: 2000, unlocked: true },
-  { id: 4, icon: "🏆", title: "Dean's List Legend", desc: "Maintained GPA above 3.8 for 6 semesters", xp: 4200, unlocked: true },
+  { id: 4, icon: "🏆", title: "Academic Legend", desc: "Barely survived all subjects...", xp: 4200, unlocked: true },
 ];
 
 const QUESTS = [
   { label: "Complete freshman year", done: true },
-  { label: "Declare major: Computer Science", done: true },
-  { label: "Survive calculus (twice)", done: true },
+  { label: "Declare major: Information Technology", done: true },
+  { label: "Survive programming fundamentals", done: true },
   { label: "Secure internship at a tech company", done: true },
   { label: "Submit senior thesis", done: true },
   { label: "Walk across the graduation stage", done: false },
@@ -155,7 +155,7 @@ function FloatingPixels() {
 }
 
 function formatSlugToName(slug: string): string {
-  if (!slug) return "Player";
+  if (!slug) return "Minh Thư";
   return slug
     .split("-")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
@@ -208,7 +208,7 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
             className="hover:opacity-70 transition-opacity"
             style={{ color: "#080818", fontFamily: "'Press Start 2P'", fontSize: "10px" }}
           >
-            ✕
+            ✖
           </button>
         </div>
 
@@ -238,8 +238,8 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
             style={{ color: "#c8c8e0", fontFamily: "'Rajdhani', sans-serif" }}
           >
             You have been invited to the ceremony. Please be there at{" "}
-            <span style={{ color: "#00e5ff", fontWeight: 700 }}>9:00 AM</span> on{" "}
-            <span style={{ color: "#00e5ff", fontWeight: 700 }}>6th of August</span>.
+            <span style={{ color: "#00e5ff", fontWeight: 700 }}>9:00 AM</span> (Doors open at{" "}
+            <span style={{ color: "#00e5ff", fontWeight: 700 }}>7:00 AM</span>).
           </div>
 
           {/* Warning box */}
@@ -255,7 +255,7 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
               animation: "glow-pulse 1.5s ease-in-out infinite",
             }}
           >
-            ⚠ AND DON&apos;T BE LATE ⚠
+            ⚠️ AND DON&apos;T BE LATE ⚠️
           </div>
 
           {/* OK button */}
@@ -286,7 +286,7 @@ export default function App() {
   const totalXP = ACHIEVEMENTS.reduce((s, a) => s + a.xp, 0);
 
   const slug = window.location.pathname.split("/").filter(Boolean).pop() ?? "";
-  const guestName = formatSlugToName(slug);
+  const guestName = slug ? formatSlugToName(slug) : "Minh Thư";
 
   useEffect(() => {
     const t = setTimeout(() => setShowAchievements(true), 600);
@@ -342,7 +342,7 @@ export default function App() {
             ))}
 
             <div className="mb-2 text-sm font-mono tracking-widest" style={{ color: "#8888aa" }}>
-              PLAYER: ALEX J. RIVERA — CLASS OF 2025
+              PLAYER: DUY LE — CLASS IT16
             </div>
 
             <h1
@@ -366,7 +366,7 @@ export default function App() {
                 letterSpacing: "0.1em",
               }}
             >
-              BACHELOR OF SCIENCE IN COMPUTER SCIENCE
+              BACHELOR OF INFORMATION TECHNOLOGY
             </div>
 
             <div className="text-lg font-semibold mb-1" style={{ color: "#e8e8f0" }}>
@@ -379,9 +379,9 @@ export default function App() {
             {/* Event details grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               {[
-                { label: "📅 DATE", value: "June 14, 2025", sub: "Saturday" },
-                { label: "🕐 TIME", value: "10:00 AM", sub: "Doors open 9:00 AM" },
-                { label: "📍 LOCATION", value: "Grand Arena", sub: "Westfield University" },
+                { label: "📅 DATE", value: "August 6", sub: "Graduation Day" },
+                { label: "🕐 TIME", value: "9:00 AM", sub: "Doors open 7:00 AM" },
+                { label: "📍 LOCATION", value: "Van Lang University", sub: "69/68 Dang Thuy Tram, An Nhon, HCMC" },
               ].map(item => (
                 <div
                   key={item.label}
@@ -495,7 +495,7 @@ export default function App() {
                 </div>
                 <div className="flex justify-between text-xs font-mono mt-1">
                   <span style={{ color: "#8888aa" }}>GUILD</span>
-                  <span style={{ color: "#e8e8f0" }}>WESTFIELD UNIVERSITY</span>
+                  <span style={{ color: "#e8e8f0" }}>VAN LANG UNIVERSITY</span>
                 </div>
               </div>
             </div>
@@ -557,12 +557,10 @@ export default function App() {
                 — PERSONAL MESSAGE FROM THE GUILD MASTER —
               </div>
               <p className="text-base leading-relaxed" style={{ color: "#c8c8e0" }}>
-                "Every late night, every exam, every bug fixed at 3AM — it all led here.
-                The final dungeon is cleared. The credits are rolling. But this is not the end
-                — it is the title screen of the next adventure."
+                "Keep striving, keep learning ceaselessly, and keep becoming a better person."
               </p>
               <div className="mt-4 font-bold text-sm" style={{ color: "#ffd700" }}>
-                — Prof. Margaret Chen, Dean of Engineering
+                — Prof. Phong Pham, Head of Product Management
               </div>
             </div>
           </PixelBorder>
