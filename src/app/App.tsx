@@ -155,7 +155,7 @@ function FloatingPixels() {
 }
 
 function formatSlugToName(slug: string): string {
-  if (!slug) return "Minh Thư";
+  if (!slug) return "Player";
   return slug
     .split("-")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
@@ -286,7 +286,7 @@ export default function App() {
   const totalXP = ACHIEVEMENTS.reduce((s, a) => s + a.xp, 0);
 
   const slug = window.location.pathname.split("/").filter(Boolean).pop() ?? "";
-  const guestName = slug ? formatSlugToName(slug) : "Minh Thư";
+  const guestName = formatSlugToName(slug);
 
   useEffect(() => {
     const t = setTimeout(() => setShowAchievements(true), 600);
