@@ -287,7 +287,7 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
           >
             You have been invited to the ceremony. Please be there at{" "}
             <span style={{ color: "#00e5ff", fontWeight: 700 }}>9:00 AM</span> (Doors open at{" "}
-            <span style={{ color: "#00e5ff", fontWeight 700 }}>7:00 AM</span>).
+            <span style={{ color: "#00e5ff", fontWeight: 700 }}>7:00 AM</span>).
           </div>
 
           {/* Warning box */}
