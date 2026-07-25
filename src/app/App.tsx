@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const ACHIEVEMENTS = [
-  { id: 1, icon: "🎓", title: "Scholar Supreme", desc: "Completed 4 years of academic quests", xp: 5000, unlocked: true },
+  { id: 1, icon: "🎓", title: "Scholar Supreme", desc: "Completed 5 years of academic quests", xp: 5000, unlocked: true },
   { id: 2, icon: "📜", title: "Thesis Conqueror", desc: "Defeated the final boss: the dissertation", xp: 3500, unlocked: true },
   { id: 3, icon: "⚔️", title: "All-Nighter Survivor", desc: "Endured 100+ hours of study marathons", xp: 2000, unlocked: true },
   { id: 4, icon: "🏆", title: "Academic Legend", desc: "Barely survived all subjects...", xp: 4200, unlocked: true },
@@ -506,11 +506,11 @@ export default function App() {
               <div className="pt-3" style={{ borderTop: "1px solid rgba(0,229,255,0.2)" }}>
                 <div className="flex justify-between text-xs font-mono">
                   <span style={{ color: "#8888aa" }}>CLASS</span>
-                  <span style={{ color: "#ffd700" }}>SOFTWARE ENGINEER LVL 1</span>
+                  <span style={{ color: "#ffd700" }}>PRODUCT ANALYST LVL 1</span>
                 </div>
                 <div className="flex justify-between text-xs font-mono mt-1">
                   <span style={{ color: "#8888aa" }}>TIME PLAYED</span>
-                  <span style={{ color: "#e8e8f0" }}>1,460 DAYS</span>
+                  <span style={{ color: "#e8e8f0" }}>1,820 DAYS</span>
                 </div>
                 <div className="flex justify-between text-xs font-mono mt-1">
                   <span style={{ color: "#8888aa" }}>GUILD</span>
