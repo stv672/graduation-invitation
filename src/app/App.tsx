@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const ACHIEVEMENTS = [
-  { id: 1, icon: "🎓", title: "Scholar Supreme", desc: "Completed 5 years of academic quests", xp: 5000, unlocked: true },
+  { id: 1, icon: "🎓", title: "Scholar Supreme", desc: "Completed 4 years of academic quests", xp: 5000, unlocked: true },
   { id: 2, icon: "📜", title: "Thesis Conqueror", desc: "Defeated the final boss: the dissertation", xp: 3500, unlocked: true },
   { id: 3, icon: "⚔️", title: "All-Nighter Survivor", desc: "Endured 100+ hours of study marathons", xp: 2000, unlocked: true },
   { id: 4, icon: "🏆", title: "Academic Legend", desc: "Barely survived all subjects...", xp: 4200, unlocked: true },
@@ -23,6 +23,20 @@ const STATS = [
   { label: "WIS", value: 91, color: "#ffd700" },
   { label: "CHA", value: 82, color: "#22c55e" },
 ];
+
+// Hàm mở Google Calendar với thông tin sự kiện được điền sẵn
+function openGoogleCalendar() {
+  const title = encodeURIComponent("The Grand Graduation Ceremony - Duy Le");
+  const details = encodeURIComponent("Graduation Ceremony of Duy Le - Bachelor of Information Technology.");
+  const location = encodeURIComponent("Van Lang University, 69/68 Dang Thuy Tram, An Nhon, HCMC");
+  // Ngày 06/08/2026: 07:00 AM - 12:00 PM (giờ Việt Nam UTC+7 -> UTC: 00:00 - 05:00)
+  const startDate = "20260806T000000Z"; 
+  const endDate = "20260806T050000Z";
+
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
+  
+  window.open(googleCalendarUrl, "_blank");
+}
 
 function PixelBorder({ children, className = "", color = "#00e5ff" }: { children: React.ReactNode; className?: string; color?: string }) {
   return (
@@ -175,6 +189,11 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
     setTimeout(onClose, 300);
   };
 
+  const handleAcceptAndSave = () => {
+    openGoogleCalendar(); // Tự động chuyển hướng sang Google Calendar để người nhận lưu lịch
+    handleClose();
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
@@ -255,23 +274,23 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
               animation: "glow-pulse 1.5s ease-in-out infinite",
             }}
           >
-            ⚠️ DON&apos;T BE LATE ⚠️
+            ⚠️ AND DON&apos;T BE LATE ⚠️
           </div>
 
-          {/* OK button */}
+          {/* OK / Add to Calendar button */}
           <button
-            onClick={handleClose}
-            className="px-10 py-3 font-bold tracking-widest transition-all duration-150 active:scale-95"
+            onClick={handleAcceptAndSave}
+            className="px-8 py-3 font-bold tracking-widest transition-all duration-150 active:scale-95"
             style={{
               fontFamily: "'Press Start 2P'",
               fontSize: "10px",
               background: "#22c55e",
               color: "#080818",
               boxShadow: "0 0 0 2px #22c55e, 0 4px 0 #166534, 0 0 20px #22c55e44",
-              letterSpacing: "0.2em",
+              letterSpacing: "0.15em",
             }}
           >
-            ► GOT IT!
+            ► GOT IT! (SAVE TO CALENDAR)
           </button>
         </div>
       </div>
@@ -487,11 +506,11 @@ export default function App() {
               <div className="pt-3" style={{ borderTop: "1px solid rgba(0,229,255,0.2)" }}>
                 <div className="flex justify-between text-xs font-mono">
                   <span style={{ color: "#8888aa" }}>CLASS</span>
-                  <span style={{ color: "#ffd700" }}>PRODUCT ANALYST LVL 1</span>
+                  <span style={{ color: "#ffd700" }}>SOFTWARE ENGINEER LVL 1</span>
                 </div>
                 <div className="flex justify-between text-xs font-mono mt-1">
                   <span style={{ color: "#8888aa" }}>TIME PLAYED</span>
-                  <span style={{ color: "#e8e8f0" }}>1,820 DAYS</span>
+                  <span style={{ color: "#e8e8f0" }}>1,460 DAYS</span>
                 </div>
                 <div className="flex justify-between text-xs font-mono mt-1">
                   <span style={{ color: "#8888aa" }}>GUILD</span>
