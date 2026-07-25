@@ -24,17 +24,33 @@ const STATS = [
   { label: "CHA", value: 82, color: "#22c55e" },
 ];
 
-// Hàm lấy đường dẫn Google Calendar Event chuẩn
-function getGoogleCalendarUrl() {
-  const title = encodeURIComponent("The Grand Graduation Ceremony - Duy Le");
-  const details = encodeURIComponent("Graduation Ceremony of Duy Le - Bachelor of Information Technology.");
-  const location = encodeURIComponent("Van Lang University, 69/68 Dang Thuy Tram, An Nhon, HCMC");
-  
-  // Ngày 06/08/2026: 07:00 AM - 12:00 PM (giờ Việt Nam UTC+7 -> UTC: 00:00 - 05:00)
-  const startDate = "20260806T000000Z"; 
-  const endDate = "20260806T050000Z";
+// Hàm tạo và tải trực tiếp file .ics (iCalendar chuẩn quốc tế)
+function downloadIcsFile() {
+  const icsContent = 
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Graduation Ceremony//EN
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VEVENT
+SUMMARY:The Grand Graduation Ceremony - Duy Le
+DESCRIPTION:Graduation Ceremony of Duy Le - Bachelor of Information Technology.
+LOCATION:Van Lang University\\, 69/68 Dang Thuy Tram\\, An Nhon\\, HCMC
+DTSTART:20260806T000000Z
+DTEND:20260806T050000Z
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR`;
 
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
+  const blob = new Blob([icsContent.trim()], { type: "text/calendar;charset=utf-8" });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", "Graduation_Ceremony_DuyLe.ics");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
 }
 
 function PixelBorder({ children, className = "", color = "#00e5ff" }: { children: React.ReactNode; className?: string; color?: string }) {
@@ -189,8 +205,9 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
   };
 
   const handleAcceptAndSave = () => {
-    // Dùng window.location.href để đảm bảo trình duyệt không chặn pop-up
-    window.location.href = getGoogleCalendarUrl();
+    // Gọi hàm kích hoạt tải file .ics trực tiếp
+    downloadIcsFile();
+    handleClose();
   };
 
   return (
@@ -223,7 +240,7 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
           <span style={{ color: "#080818" }}>◄ NEW QUEST ACCEPTED ►</span>
           <button
             onClick={handleClose}
-            className="hover:opacity-70 transition-opacity"
+            className="hover:opacity-70 transition-opacity cursor-pointer"
             style={{ color: "#080818", fontFamily: "'Press Start 2P'", fontSize: "10px" }}
           >
             ✖
@@ -276,7 +293,7 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
             ⚠️ AND DON&apos;T BE LATE ⚠️
           </div>
 
-          {/* OK / Add to Calendar button */}
+          {/* Nút bấm tải file .ics trực tiếp */}
           <button
             onClick={handleAcceptAndSave}
             className="px-8 py-3 font-bold tracking-widest transition-all duration-150 active:scale-95 cursor-pointer"
