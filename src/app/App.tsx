@@ -24,47 +24,24 @@ const STATS = [
   { label: "CHA", value: 82, color: "#22c55e" },
 ];
 
-// CÁCH 1: Đường dẫn Google Calendar EventEdit chuẩn mới
+// Lấy URL Google Calendar EventEdit chuẩn
 function getGoogleCalendarUrl() {
   const title = encodeURIComponent("The Grand Graduation Ceremony - Duy Le");
   const details = encodeURIComponent("Graduation Ceremony of Duy Le - Bachelor of Information Technology.");
   const location = encodeURIComponent("Van Lang University, 69/68 Dang Thuy Tram, An Nhon, HCMC");
   
-  // Ngày 06/08/2026: 07:00 AM - 12:00 PM (giờ Việt Nam UTC+7 -> UTC: 20260806T000000Z/20260806T050000Z)
+  // Ngày 06/08/2026: 07:00 AM - 12:00 PM (UTC+7 -> UTC: 20260806T000000Z/20260806T050000Z)
   const startDate = "20260806T000000Z"; 
   const endDate = "20260806T050000Z";
 
-  // Dùng cấu trúc /r/eventedit của Google Calendar
   return `https://calendar.google.com/calendar/r/eventedit?text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
 }
 
-// CÁCH 2 (Dự phòng): Tải file .ics
-function downloadIcsFile() {
-  const icsContent = 
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Graduation Ceremony//EN
-CALSCALE:GREGORIAN
-METHOD:REQUEST
-BEGIN:VEVENT
-SUMMARY:The Grand Graduation Ceremony - Duy Le
-DESCRIPTION:Graduation Ceremony of Duy Le - Bachelor of Information Technology.
-LOCATION:Van Lang University\\, 69/68 Dang Thuy Tram\\, An Nhon\\, HCMC
-DTSTART:20260806T000000Z
-DTEND:20260806T050000Z
-STATUS:CONFIRMED
-END:VEVENT
-END:VCALENDAR`;
-
-  const blob = new Blob([icsContent.trim()], { type: "text/calendar;charset=utf-8" });
-  const url = window.URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "Graduation_Ceremony_DuyLe.ics");
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  window.URL.revokeObjectURL(url);
+// Kiểm tra xem user có đang mở trong Zalo, Facebook, Messenger hay không
+function isUserInWebView() {
+  if (typeof window === "undefined") return false;
+  const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
+  return /FBAN|FBAV|Instagram|Zalo|Line|FB_IAB/i.test(ua);
 }
 
 function PixelBorder({ children, className = "", color = "#00e5ff" }: { children: React.ReactNode; className?: string; color?: string }) {
@@ -207,6 +184,8 @@ function formatSlugToName(slug: string): string {
 
 function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void; recipientName: string }) {
   const [visible, setVisible] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const inWebView = isUserInWebView();
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 10);
@@ -219,8 +198,24 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
   };
 
   const handleOpenGoogleCalendar = () => {
-    // Chuyển hướng trực tiếp bằng Cách 1
-    window.location.href = getGoogleCalendarUrl();
+    const calendarUrl = getGoogleCalendarUrl();
+    const isAndroid = /Android/i.test(navigator.userAgent);
+
+    // Nếu đang ở WebView trên Android, điều hướng bắt buộc mở Chrome
+    if (inWebView && isAndroid) {
+      const chromeIntent = calendarUrl.replace("https://", "intent://") + "#Intent;scheme=https;package=com.android.chrome;end";
+      window.location.href = chromeIntent;
+      return;
+    }
+
+    // Mặc định mở tab mới cho Desktop & Safari
+    window.open(calendarUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(getGoogleCalendarUrl());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -261,28 +256,27 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
         </div>
 
         {/* Body */}
-        <div className="p-8 text-center">
-          {/* Trophy icon with glow */}
+        <div className="p-6 text-center">
           <div
-            className="text-6xl mb-4 inline-block"
+            className="text-5xl mb-3 inline-block"
             style={{ animation: "blink-badge 2s ease-in-out infinite", filter: "drop-shadow(0 0 12px #ffd700)" }}
           >
             🏆
           </div>
 
           <div
-            style={{ fontFamily: "'Press Start 2P'", fontSize: "clamp(9px, 2vw, 13px)", color: "#ffd700", lineHeight: 2 }}
-            className="mb-4"
+            style={{ fontFamily: "'Press Start 2P'", fontSize: "clamp(9px, 2vw, 12px)", color: "#ffd700", lineHeight: 1.8 }}
+            className="mb-2"
           >
             CONGRATULATIONS!
           </div>
 
-          <div className="text-xl font-bold mb-5" style={{ color: "#ffffff" }}>
+          <div className="text-lg font-bold mb-3" style={{ color: "#ffffff" }}>
             {recipientName}!
           </div>
 
           <div
-            className="text-base leading-relaxed mb-6 px-2"
+            className="text-sm leading-relaxed mb-4 px-2"
             style={{ color: "#c8c8e0", fontFamily: "'Rajdhani', sans-serif" }}
           >
             You have been invited to the ceremony. Please be there at{" "}
@@ -290,45 +284,51 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
             <span style={{ color: "#00e5ff", fontWeight: 700 }}>7:00 AM</span>).
           </div>
 
-          {/* Warning box */}
-          <div
-            className="px-4 py-3 mb-6 font-bold text-sm tracking-wide"
-            style={{
-              background: "rgba(255,68,85,0.1)",
-              border: "1px solid #ff4455",
-              color: "#ff4455",
-              fontFamily: "'Press Start 2P'",
-              fontSize: "8px",
-              lineHeight: 2,
-              animation: "glow-pulse 1.5s ease-in-out infinite",
-            }}
-          >
-            ⚠️ AND DON&apos;T BE LATE ⚠️
-          </div>
+          {/* Gợi ý cho người dùng nếu dùng Zalo / FB Browser */}
+          {inWebView && (
+            <div
+              className="p-3 mb-4 text-left text-xs font-mono"
+              style={{
+                background: "rgba(0, 229, 255, 0.1)",
+                border: "1px solid #00e5ff",
+                color: "#00e5ff",
+                borderRadius: "4px",
+              }}
+            >
+              💡 <b>Mẹo cho Zalo / Messenger:</b><br />
+              Nếu không tự mở Lịch, hãy bấm dấu <b>(...)</b> ở góc trên màn hình và chọn <b>"Mở bằng trình duyệt"</b> nhé!
+            </div>
+          )}
 
-          {/* Nút bấm Cách 1: Mở Google Calendar */}
+          {/* Nút chính: Mở Google Calendar */}
           <button
             onClick={handleOpenGoogleCalendar}
-            className="w-full px-6 py-3.5 mb-3 font-bold tracking-widest transition-all duration-150 active:scale-95 cursor-pointer block"
+            className="w-full px-4 py-3.5 mb-2 font-bold tracking-widest transition-all duration-150 active:scale-95 cursor-pointer block"
             style={{
               fontFamily: "'Press Start 2P'",
-              fontSize: "10px",
+              fontSize: "9px",
               background: "#22c55e",
               color: "#080818",
               boxShadow: "0 0 0 2px #22c55e, 0 4px 0 #166534, 0 0 20px #22c55e44",
-              letterSpacing: "0.15em",
+              letterSpacing: "0.1em",
             }}
           >
             ► SAVE TO GOOGLE CALENDAR
           </button>
 
-          {/* Link phụ: Tải file .ics nếu muốn dùng app Lịch khác */}
+          {/* Nút phụ: Copy link dự phòng */}
           <button
-            onClick={downloadIcsFile}
-            className="text-xs font-mono underline opacity-70 hover:opacity-100 cursor-pointer transition-opacity"
-            style={{ color: "#00e5ff" }}
+            onClick={handleCopyLink}
+            className="w-full px-4 py-2 font-bold tracking-widest transition-all duration-150 active:scale-95 cursor-pointer block"
+            style={{
+              fontFamily: "'Press Start 2P'",
+              fontSize: "8px",
+              background: "transparent",
+              color: "#ffd700",
+              border: "1px solid #ffd700",
+            }}
           >
-            Or download .ICS file for Apple Calendar / Outlook
+            {copied ? "✓ LINK COPIED!" : "📋 COPY CALENDAR LINK"}
           </button>
         </div>
       </div>
@@ -623,7 +623,7 @@ export default function App() {
           </PixelBorder>
 
           <div className="mt-6 font-mono text-xs" style={{ color: "#333366" }}>
-            GAME SAVE: GRADUATION_CEREMONY_2025.SAV • AUTO-SAVE ENABLED • MEMORY: 1,460 DAYS STORED
+            GAME SAVE: GRADUATION_CEREMONY_2026.SAV • AUTO-SAVE ENABLED • MEMORY: 1,460 DAYS STORED
           </div>
           <div className="mt-1 font-mono text-xs flex items-center justify-center gap-2" style={{ color: "#333366" }}>
             <span>PRESS</span>
