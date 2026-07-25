@@ -24,18 +24,17 @@ const STATS = [
   { label: "CHA", value: 82, color: "#22c55e" },
 ];
 
-// Hàm mở Google Calendar với thông tin sự kiện được điền sẵn
-function openGoogleCalendar() {
+// Hàm lấy đường dẫn Google Calendar Event chuẩn
+function getGoogleCalendarUrl() {
   const title = encodeURIComponent("The Grand Graduation Ceremony - Duy Le");
   const details = encodeURIComponent("Graduation Ceremony of Duy Le - Bachelor of Information Technology.");
   const location = encodeURIComponent("Van Lang University, 69/68 Dang Thuy Tram, An Nhon, HCMC");
+  
   // Ngày 06/08/2026: 07:00 AM - 12:00 PM (giờ Việt Nam UTC+7 -> UTC: 00:00 - 05:00)
   const startDate = "20260806T000000Z"; 
   const endDate = "20260806T050000Z";
 
-  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
-  
-  window.open(googleCalendarUrl, "_blank");
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
 }
 
 function PixelBorder({ children, className = "", color = "#00e5ff" }: { children: React.ReactNode; className?: string; color?: string }) {
@@ -190,8 +189,8 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
   };
 
   const handleAcceptAndSave = () => {
-    openGoogleCalendar(); // Tự động chuyển hướng sang Google Calendar để người nhận lưu lịch
-    handleClose();
+    // Dùng window.location.href để đảm bảo trình duyệt không chặn pop-up
+    window.location.href = getGoogleCalendarUrl();
   };
 
   return (
@@ -280,7 +279,7 @@ function CongratulationsPopup({ onClose, recipientName }: { onClose: () => void;
           {/* OK / Add to Calendar button */}
           <button
             onClick={handleAcceptAndSave}
-            className="px-8 py-3 font-bold tracking-widest transition-all duration-150 active:scale-95"
+            className="px-8 py-3 font-bold tracking-widest transition-all duration-150 active:scale-95 cursor-pointer"
             style={{
               fontFamily: "'Press Start 2P'",
               fontSize: "10px",
@@ -422,7 +421,7 @@ export default function App() {
             {/* RSVP Button */}
             <button
               onClick={() => { setRsvpClicked(true); setShowPopup(true); }}
-              className="relative px-10 py-4 font-bold text-lg tracking-widest uppercase transition-all duration-150 active:scale-95"
+              className="relative px-10 py-4 font-bold text-lg tracking-widest uppercase transition-all duration-150 active:scale-95 cursor-pointer"
               style={{
                 fontFamily: "'Press Start 2P'",
                 fontSize: "11px",
